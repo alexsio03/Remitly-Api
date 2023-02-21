@@ -29,7 +29,7 @@ document.addEventListener("DOMContentLoaded", function() {
   });
   
   function convertCurrency(fromCurrency, toCurrency, amount) {
-    const apiUrl = `http://api.nbp.pl/api/exchangerates/rates/a/${toCurrency}/?format=json`;
+    const apiUrl = `https://api.nbp.pl/api/exchangerates/rates/a/${toCurrency}/?format=json`;
     fetch(apiUrl)
       .then(response => response.json())
       .then(data => {
