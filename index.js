@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", function() {
   let fromAmountField = document.getElementById("from-amount");
   let fromCurrencyField = document.getElementById("from-currency");
   let toAmountField = document.getElementById("to-amount");
+  
 
   fromAmountField.addEventListener("input", function() {
     amount = fromAmountField.value;
@@ -28,6 +29,14 @@ document.addEventListener("DOMContentLoaded", function() {
 });
 
 function convertCurrency(fromCurrency, reverse, amount) {
+  let flag = document.getElementById("flag"); 
+  if(fromCurrency == "GBP") {
+    flag.innerHTML = `<i class="flag flag-united-kingdom"></i>`;
+  } else if (fromCurrency == "USD") {
+    flag.innerHTML = `<i class="flag flag-us"></i>`;
+  } else {
+    flag.innerHTML = `<i class="flag flag-eu"></i>`;
+  }
   const resultElement = document.getElementById("result");
   // Fetch the exchange rate from the API using the provided URL
   fetch(`https://api.nbp.pl/api/exchangerates/rates/a/${fromCurrency}/?format=json&callback=callback`)
@@ -38,11 +47,9 @@ function convertCurrency(fromCurrency, reverse, amount) {
       resultElement.innerHTML = result;
       if(reverse) {
         let resultAmount = amount / exchangeRate;
-        // let result = `${amount} ${fromCurrency} = <b>${resultAmount.toFixed(2)} ${toCurrency}</b>`;
         displayFrom(resultAmount);
       } else {
         let resultAmount = amount * exchangeRate;
-        // let result = `${amount} ${fromCurrency} = <b>${resultAmount.toFixed(2)} ${toCurrency}</b>`;
         displayTo(resultAmount);
       }
     })
