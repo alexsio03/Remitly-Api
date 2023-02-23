@@ -4,47 +4,61 @@ document.addEventListener("DOMContentLoaded", function() {
   let amount = 20;
 
   // Call the convertCurrency() function to perform the initial conversion
-  convertCurrency(fromCurrency, amount);
+  convertCurrency(fromCurrency, 0, amount);
 
   // Attach event listeners to the input fields to update the conversion result live
-  let amountField = document.getElementById("from-amount");
+  let fromAmountField = document.getElementById("from-amount");
   let fromCurrencyField = document.getElementById("from-currency");
-  let toCurrencyField = document.getElementById("to-amount");
+  let toAmountField = document.getElementById("to-amount");
 
-  amountField.addEventListener("input", function() {
-    amount = amountField.value;
-    convertCurrency(fromCurrency, amount);
+  fromAmountField.addEventListener("input", function() {
+    amount = fromAmountField.value;
+    convertCurrency(fromCurrency, 0, amount);
   });
 
   fromCurrencyField.addEventListener("change", function() {
     fromCurrency = fromCurrencyField.value;
-    convertCurrency(fromCurrency, amount);
+    convertCurrency(fromCurrency, 0, amount);
   });
+
+  toAmountField.addEventListener("change", function() {
+    amount = toAmountField.value;
+    convertCurrency(fromCurrency, 1, amount);
+  })
 });
 
-  
-
-function convertCurrency(fromCurrency, amount) {
+function convertCurrency(fromCurrency, reverse, amount) {
   const resultElement = document.getElementById("result");
   // Fetch the exchange rate from the API using the provided URL
   fetch(`https://api.nbp.pl/api/exchangerates/rates/a/${fromCurrency}/?format=json&callback=callback`)
     .then(response => response.json())
     .then(data => {
       let exchangeRate = data.rates[0].mid;
-      let resultAmount = amount * exchangeRate;
-      // let result = `${amount} ${fromCurrency} = <b>${resultAmount.toFixed(2)} ${toCurrency}</b>`;
-      let result = `1 ${fromCurrency} = <b>${exchangeRate} PLN</b>`;
+      let result = `1 ${fromCurrency} = <b>${exchangeRate.toFixed(2)} PLN</b>`;
       resultElement.innerHTML = result;
-      displayResult(resultAmount);
+      if(reverse) {
+        let resultAmount = amount / exchangeRate;
+        // let result = `${amount} ${fromCurrency} = <b>${resultAmount.toFixed(2)} ${toCurrency}</b>`;
+        displayFrom(resultAmount);
+      } else {
+        let resultAmount = amount * exchangeRate;
+        // let result = `${amount} ${fromCurrency} = <b>${resultAmount.toFixed(2)} ${toCurrency}</b>`;
+        displayTo(resultAmount);
+      }
     })
     .catch(error => {
       console.error(error);
       let result = "An error occurred while fetching the exchange rate. Please try again later.";
-      displayResult(result);
+      resultElement.innerHTML = result;
     });
 }
 
-function displayResult(resultAmount) {
-  const resultElement = document.getElementById("to-amount");
-  resultElement.value = resultAmount.toFixed(2);
+function displayTo(resultAmount) {
+  const toAmount = document.getElementById("to-amount");
+  toAmount.value = resultAmount.toFixed(2);
+}
+
+function displayFrom(resultAmount) {
+  const fromAmount = document.getElementById("from-amount");
+  fromAmount.value = resultAmount.toFixed(2);
 }
