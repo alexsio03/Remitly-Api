@@ -14,16 +14,7 @@ input {
     border-radius: 4px;
 }
 
-select {
+select, #PLN {
     border: none;
-    margin-left: auto;
-    margin-right: 0;
-}
-
-#PLN{
-    margin-left: 4rem;
-}
-
-#from-currency {
-    margin-left: 2rem;
+    float: right;
 }
