@@ -11,21 +11,27 @@
     <script defer src="index.js" charset="utf-8"></script>
   </head>
   <body>
-    <div>
+    <div class="outer">
       <h1>Currency Converter</h1>
       <form>
         <label for="from-currency">You Send:</label>
         <br>
-        <select id="from-currency">
-          <option value="GBP">GBP</option>
-          <option value="USD">USD</option>
-          <option value="EUR">EUR</option>
-        </select>
-        <input type="number" id="from-amount" value="20">
+        <div class="box">
+          <span>🇬🇧</span>
+          <input type="text" id="from-amount" value="20">
+          <select id="from-currency">
+            <option value="GBP">GBP</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+          </select>
+        </div>
         <br>
         <label for="to-currency">They receive: </label>
         <br>
-        <input type="number" id="to-amount" value="">
+        <div class="box">
+          <span>🇵🇱</span>
+          <input type="text" id="to-amount" value="">
+        </div>
         <br>
       </form>
       <br>
