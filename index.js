@@ -15,7 +15,12 @@ document.addEventListener("DOMContentLoaded", function() {
   // Update the result when the user changes the 'from' amount
   fromAmountField.addEventListener("input", function() {
     amount = fromAmountField.value;
-    convertCurrency(fromCurrency, 0, amount);
+    // Check that the input is a valid number
+    if (isNaN(amount)) {
+      displayError("Invalid input. Please enter a number.");
+    } else {
+      convertCurrency(fromCurrency, 0, amount);
+    }
   });
 
   // Update the result when the user changes the 'from' currency
@@ -27,7 +32,12 @@ document.addEventListener("DOMContentLoaded", function() {
   // Update the 'from' amount when the user changes the 'to' amount
   toAmountField.addEventListener("change", function() {
     amount = toAmountField.value;
-    convertCurrency(fromCurrency, 1, amount);
+    // Check that the input is a valid number
+    if (isNaN(amount)) {
+      displayError("Invalid input. Please enter a number.");
+    } else {
+      convertCurrency(fromCurrency, 1, amount);
+    }
   })
 });
 
@@ -50,6 +60,12 @@ function convertCurrency(fromCurrency, reverse, amount) {
   fetch(`https://api.nbp.pl/api/exchangerates/rates/a/${fromCurrency}/?format=json&callback=callback`)
     .then(response => response.json())
     .then(data => {
+      // Check that the API returned a valid response
+      if (!data || !data.rates || data.rates.length === 0) {
+        displayError("An error occurred while fetching the exchange rate. Please try again later.");
+        return;
+      }
+
       // Extract the exchange rate from the API response
       let exchangeRate = data.rates[0].mid;
 
@@ -69,8 +85,7 @@ function convertCurrency(fromCurrency, reverse, amount) {
     .catch(error => {
       // Display an error message if the API request fails
       console.error(error);
-      let result = "An error occurred while fetching the exchange rate. Please try again later.";
-      resultElement.innerHTML = result;
+      displayError("An error occurred while fetching the exchange rate. Please try again later.");
     });
 }
 
@@ -84,4 +99,14 @@ function displayTo(resultAmount) {
 function displayFrom(resultAmount) {
   const fromAmount = document.getElementById("from-amount");
   fromAmount.value = resultAmount.toFixed(2);
+}
+
+// Display error message and set values to null
+function displayError(errorMessage) {
+  const resultElement = document.getElementById("result");
+  resultElement.innerHTML = errorMessage;
+  const toAmount = document.getElementById("to-amount");
+  toAmount.value = "";
+  const fromAmount = document.getElementById("from-amount");
+  fromAmount.value = "";
 }
